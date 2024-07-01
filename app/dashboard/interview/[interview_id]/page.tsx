@@ -23,23 +23,24 @@ interface ResponseType{
 }
 function Interview({params}:{params:ParamsType}) {
     
-  const [interviewData,setInterviewData] = useState<ResponseType>();
-  const [webCamEnabled,setWebCamEnabled] = useState(false);
+  const [interviewData,setInterviewData] = useState<ResponseType>()
+  const [webCamEnabled,setWebCamEnabled] = useState(false)
 
   useEffect(()=>{
-    console.log(params);
-    GetInterviewDetails();
+    console.log(params)
+    GetInterviewDetails()
   })
   // using mockId fetching the details from db
   const GetInterviewDetails = async ()=>{
     const result = await db.select().from(MockInterview)
-    .where(eq(MockInterview.mockId,params.interview_id));
-    console.log(result);
-    setInterviewData(result[0]);
+    .where(eq(MockInterview.mockId,params.interview_id))
+
+    console.log(result)
+    setInterviewData(result[0])
   }
   return (
     <div className='my-10 '>
-        <h2 className='font-bold text-2xl'>Let's Get Started</h2>
+        <h2 className='font-bold text-2xl'>Let&apos;s Get Started</h2>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-20'>
             <div className='flex flex-col my-8 gap-5'>
                 <div className='border flex flex-col p-4 py-10 rounded-md gap-4'>
@@ -66,7 +67,7 @@ function Interview({params}:{params:ParamsType}) {
             </div>
         </div>
         <div className='flex justify-end mt-8'>
-            <Link href={`/dashboard/interview/${params.interview_id}/start `}>
+            <Link href={`/dashboard/interview/${params.interview_id}/start`}>
                 <Button>START</Button>
             </Link>
         </div>

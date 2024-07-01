@@ -1,11 +1,12 @@
 import { SignIn } from "@clerk/nextjs";
+import Image from "next/image";
 
 export default function Page() {
   return (
     <section className="bg-zinc-300">
       <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
         <section className="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6">
-          <img
+          <Image
             alt=""
             src="/authPage.jpg"
             className="absolute inset-0 h-full w-full object-cover opacity-80"
