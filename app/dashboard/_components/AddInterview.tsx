@@ -15,59 +15,61 @@ import { Textarea } from "@/components/ui/textarea";
 import { chatSession } from "@/utils/geminiMode";
 import { MockInterview } from "@/utils/schema";
 import { db } from "@/utils/db";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import { useUser } from "@clerk/nextjs";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 
 function AddInterview() {
+
   const [openDialog, setOpenDialog] = useState(false);
   const [jobPosition, setJobPosition] = useState<string>("");
   const [jobDesc, setJobDesc] = useState<string>("");
   const [jobExperience, setJobExperience] = useState<string>("");
-  const [loading,setLoading] = useState(false);
-  const [jsonResponse,setJsonResponse] =useState<string>("");
-  const {user} = useUser();// from clerk
+  const [loading, setLoading] = useState(false);
+  const [jsonResponse, setJsonResponse] = useState<string>("");
+  const { user } = useUser(); // from clerk
   const router = useRouter();
 
   const onSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     setLoading(true);
     e.preventDefault();
     console.log(jobPosition, jobDesc, jobExperience);
-    const InputPrompt =`Job Position:${jobPosition} ,Job Description: ${jobDesc}, Year of Experience:${jobExperience} , Depends on this information please give me 5 interview question with answered in json format , Give question and answer as field in JSON`;
-    try{
-        const response = await chatSession.sendMessage(InputPrompt);// ```json ,```
-        setLoading(false);
-        console.log(response.response.text());
-        const responseText = response.response.text();
-        const parseResponse = responseText.match(/```json\s*([\s\S]*?)\s*```/)[1];
-        setJsonResponse(parseResponse);
-        // store this in database
-        console.log(JSON.parse(parseResponse));
-        if(parseResponse){
-            const res = await db.insert(MockInterview)
-            .values({
-                jsonMockResp:parseResponse,
-                jobPosition:jobPosition,
-                jobDesc:jobDesc,
-                jobExperience:jobExperience,
-                mockId:uuidv4(),
-                createdBy:user?.primaryEmailAddress?.emailAddress||"",
-                createdAt:moment().format('DD-MM-yyyy')
-            }).returning({mockId:MockInterview.mockId})
-            console.log("Inserted mockId",res);
-            if(res){
-                setOpenDialog(false);
-                router.push(`/dashboard/interview/${res[0].mockId}`)
-            }
-        }else{
-            // some error -> 
+    const InputPrompt = `Job Position:${jobPosition} ,Job Description: ${jobDesc}, Year of Experience:${jobExperience} , Depends on this information please give me 5 interview question with answered in json format , Give question and answer as field in JSON`;
+    try {
+      const response = await chatSession.sendMessage(InputPrompt); // ```json ,```
+      setLoading(false);
+      console.log(response.response.text());
+      const responseText = response.response.text();
+      const parseResponse = responseText.match(/```json\s*([\s\S]*?)\s*```/)[1];
+      setJsonResponse(parseResponse);
+      // store this in database
+      console.log(JSON.parse(parseResponse));
+      if (parseResponse) {
+        const res = await db
+          .insert(MockInterview)
+          .values({
+            jsonMockResp: parseResponse,
+            jobPosition: jobPosition,
+            jobDesc: jobDesc,
+            jobExperience: jobExperience,
+            mockId: uuidv4(),
+            createdBy: user?.primaryEmailAddress?.emailAddress || "",
+            createdAt: moment().format("DD-MM-yyyy"),
+          })
+          .returning({ mockId: MockInterview.mockId });
+        console.log("Inserted mockId", res);
+        if (res) {
+          setOpenDialog(false);
+          router.push(`/dashboard/interview/${res[0].mockId}`);
         }
-    }catch(e){
-        console.log(e);
-        // add a toast something went wrong
+      } else {
+        // some error ->
+      }
+    } catch (e) {
+      console.log(e);
+      // add a toast something went wrong
     }
-    
   };
   return (
     <div>
@@ -124,9 +126,15 @@ function AddInterview() {
                     Cancel
                   </Button>
                   <Button type="submit" disabled={loading}>
-                    {loading?
-                    <div className="flex items-center"><ImSpinner2 className="animate-spin"></ImSpinner2>Generating</div>:"Start"}
-                </Button>
+                    {loading ? (
+                      <div className="flex items-center">
+                        <ImSpinner2 className="animate-spin"></ImSpinner2>
+                        Generating
+                      </div>
+                    ) : (
+                      "Start"
+                    )}
+                  </Button>
                 </div>
               </form>
             </DialogDescription>
@@ -135,6 +143,7 @@ function AddInterview() {
       </Dialog>
     </div>
   );
+  
 }
 
 export default AddInterview;

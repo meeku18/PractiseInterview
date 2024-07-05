@@ -13,16 +13,12 @@ interface quesAnsType{
     question:string,
     answer:string
 }
-
 interface ResponseType{
     id: number;
-    jsonMockResp: string;
-    jobPosition: string;
-    jobDesc: string;
-    jobExperience: string;
-    createdBy: string;
     createdAt: string;
     mockId: string;
+    questionAnswer: string;
+    topicName: string;
 }
 function RecordAns({mockResp,activeIndex,interviewData}:{mockResp:quesAnsType[],activeIndex:number,interviewData:ResponseType|undefined}) {
     const [userAnswer,setUserAnswer] = useState<string>("");
@@ -63,7 +59,7 @@ function RecordAns({mockResp,activeIndex,interviewData}:{mockResp:quesAnsType[],
     }
     const UpdateUserAnswer = async()=>{
         setLoading(true);
-        const feedbackPrompt = `Question: ${mockResp[activeIndex]?.question} ,UserAnswer: ${userAnswer} ,Depends on question ans user answer for give
+        const feedbackPrompt = `Question: ${mockResp[activeIndex]?.question} ,UserAnswer: ${userAnswer} , CorrectAnswer: ${mockResp[activeIndex]?.answer}Depends on question ans user answer for give
         interview question please give us rating(1-10) for answer and feedback as area of improvement if any in 3-5 lines to improve it in JSON format with rating field and feedback field`
         
         const result = await chatSession.sendMessage(feedbackPrompt);
@@ -71,8 +67,8 @@ function RecordAns({mockResp,activeIndex,interviewData}:{mockResp:quesAnsType[],
         //console.log(responseText);
         const parseResponse = JSON.parse(responseText.match(/```json\s*([\s\S]*?)\s*```/)[1]);
         //console.log(parseResponse);
-        console.log(userAnswer);
-        // change this to update and insert , so that for same question i dont have multiple answers in my db
+        //console.log(userAnswer);
+        //change this to update and insert , so that for same question i dont have multiple answers in my db
         const resp = await db.insert(UserAnswer).values({
             mockIdRef:interviewData?.mockId||"",
             question:mockResp[activeIndex].question,
@@ -86,7 +82,7 @@ function RecordAns({mockResp,activeIndex,interviewData}:{mockResp:quesAnsType[],
         if(resp){
             setResults([]);
             setUserAnswer('');
-            console.log("recorded answer successfully");
+            //console.log("recorded answer successfully");
             // we can use toast for this
         }
         setResults([]);

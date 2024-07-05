@@ -25,3 +25,13 @@ export const UserAnswer = pgTable('userAnswer',{
     userEmail:varchar('userEmail'),
     createdAt:varchar('createdAt')
 })
+
+export const DefaultTable =  pgTable('defaultTable',{
+
+    id:serial('id').primaryKey(),
+    questionAnswer:text('questionAnswer').notNull(),
+    topicName:text('topicName').notNull(),
+    createdAt:varchar('createdAt').notNull(),
+    mockId:varchar('mockId').notNull()
+
+})
