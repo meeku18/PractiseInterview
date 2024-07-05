@@ -57,7 +57,7 @@ function Interview({ params }: { params: ParamsType }) {
 
   return (
     <div className='my-10 p-4'>
-      <h2 className='font-bold text-2xl'>Let's Get Started</h2>
+      <h2 className='font-bold text-2xl'>Let&apos; Get Started</h2>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
         <div className='flex flex-col my-8 gap-5'>
           <div className='border flex flex-col p-4 py-10 rounded-md gap-4'>
